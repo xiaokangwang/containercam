@@ -21,4 +21,4 @@ require (
 	golang.org/x/sys v0.0.0-20211216021012-1d35b9e2eb4e // indirect
 )
 
-replace github.com/heroku/docker-registry-client v0.0.0-20211012143308-9463674c8930 => github.com/xiaokangwang/ubiquitous-dollop v0.0.0-20220421171237-4bd11a8d62f1
+replace github.com/heroku/docker-registry-client v0.0.0-20211012143308-9463674c8930 => github.com/xiaokangwang/ubiquitous-dollop v0.0.0-20220422222424-85311cce9361
