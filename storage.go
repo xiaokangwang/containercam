@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"errors"
+	"fmt"
 	"github.com/docker/distribution"
 	"github.com/docker/distribution/manifest/schema2"
 	"github.com/heroku/docker-registry-client/registry"
@@ -32,6 +33,11 @@ type Storage struct {
 }
 
 func (s *Storage) DownloadByHash(sha256Value string) ([]byte, error) {
+	manifest, err := s.registry.ManifestV2(s.registryName, sha256Value)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	_ = manifest
 	data, err := s.registry.DownloadBlob(s.registryName, digest.Digest("sha256:"+sha256Value))
 	if err != nil {
 		return nil, err
@@ -65,10 +71,14 @@ func (s *Storage) UploadByHash(sha256Value string, hashedData []byte) error {
 	}
 	keepAliveManifest := schema2.Manifest{
 		Versioned: schema2.SchemaVersion,
-		Config:    distribution.Descriptor{},
+		Config: distribution.Descriptor{
+			MediaType: "application/vnd.docker.container.image.v1+json",
+			Size:      1478,
+			Digest:    "sha256:c077ecbc578ee6db06df4b6532b36703db7454a40eece470051e45fe0e9d27e2",
+		},
 		Layers: []distribution.Descriptor{
 			{
-				MediaType: "application/vnd.docker.image.rootfs.diff.tar.gzip+encrypted",
+				MediaType: "application/vnd.docker.image.rootfs.diff.tar.gzip",
 				Size:      int64(len(hashedData)),
 				Digest:    dataDigest,
 			},
