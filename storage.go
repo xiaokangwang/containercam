@@ -30,6 +30,11 @@ type Storage struct {
 	registry      *registry.Registry
 	registryName  string
 	keepaliveName func(sha256value string) string
+	alwaysUpload  bool
+}
+
+func (s *Storage) SetAlwaysUpload(alwaysUpload bool) {
+	s.alwaysUpload = alwaysUpload
 }
 
 func (s *Storage) DownloadByHash(sha256Value string) ([]byte, error) {
@@ -59,10 +64,15 @@ func (s *Storage) UploadByHash(sha256Value string, hashedData []byte) error {
 		return errors.New("invalid content from registry")
 	}
 	dataDigest := digest.FromBytes(hashedData)
-	cached, err := s.registry.HasBlob(s.registryName, dataDigest)
-	if err != nil {
-		return err
+	var cached bool
+	if !s.alwaysUpload {
+		var err error
+		cached, err = s.registry.HasBlob(s.registryName, dataDigest)
+		if err != nil {
+			return err
+		}
 	}
+	var err error
 	if !cached {
 		err = s.registry.UploadBlob(s.registryName, dataDigest, bytes.NewReader(hashedData))
 		if err != nil {
