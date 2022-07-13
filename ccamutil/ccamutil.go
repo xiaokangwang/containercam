@@ -5,13 +5,14 @@ import (
 	"encoding/hex"
 	"flag"
 	"fmt"
+	"net/http"
+	"os"
+
 	"github.com/google/go-containerregistry/pkg/authn"
 	"github.com/google/go-containerregistry/pkg/name"
 	"github.com/google/go-containerregistry/pkg/v1/remote/transport"
 	"github.com/heroku/docker-registry-client/registry"
 	"github.com/xiaokangwang/containercam"
-	"net/http"
-	"os"
 )
 
 func main() {
