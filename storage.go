@@ -39,9 +39,20 @@ func (s *Storage) SetAlwaysUpload(alwaysUpload bool) {
 }
 
 func (s *Storage) DownloadByHash(sha256Value string) ([]byte, error) {
+	return s.downloadByHashInternal(sha256Value, false)
+}
+
+func (s *Storage) DownloadByHashStrict(sha256Value string) ([]byte, error) {
+	return s.downloadByHashInternal(sha256Value, true)
+}
+
+func (s *Storage) downloadByHashInternal(sha256Value string, strict bool) ([]byte, error) {
 	manifest, err := s.registry.ManifestV2(s.registryName, sha256Value)
 	if err != nil {
 		fmt.Println(err.Error())
+		if strict {
+			return nil, err
+		}
 	}
 	_ = manifest
 	data, err := s.registry.DownloadBlob(s.registryName, digest.Digest("sha256:"+sha256Value))
